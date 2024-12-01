@@ -41,6 +41,7 @@ public class Main {
             List<UserScore> output = new ArrayList<>();
             for (String userDiscord : userDiscords) {
                 List<UserGameData> specificData = userData.stream().filter(e -> e.discord.toLowerCase().equals(userDiscord)).toList();
+                int totalGames = specificData.size();
                 List<Integer> userScore = specificData.stream().map(e -> e.questTotal).sorted().toList();
                 int max;
                 int max2 = 0;
@@ -61,9 +62,9 @@ public class Main {
                 if (straight) totalScore += 3;
                 if (safe) totalScore += 3;
                 if (beast) totalScore += 6;
-                output.add(new UserScore(userDiscord, totalScore));
+                output.add(new UserScore(userDiscord, totalScore, totalGames));
             }
-            output.stream().sorted(Comparator.reverseOrder()).forEach(e -> System.out.println(e.discord + " got a score of " + e.score));
+            output.stream().sorted(Comparator.reverseOrder()).forEach(e -> System.out.println(e.discord + ", " + e.score+", "+ e.totalGames));
 
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
@@ -73,10 +74,12 @@ public class Main {
     static class UserScore implements Comparable<UserScore> {
         String discord;
         int score;
+        int totalGames;
 
-        public UserScore(String discord, int score) {
+        public UserScore(String discord, int score, int totalGames) {
             this.discord = discord;
             this.score = score;
+            this.totalGames = totalGames;
         }
 
         @Override
